@@ -1,0 +1,12 @@
+package com.phoenixhell.lession1.service;
+
+import com.phoenixhell.lession1.entity.User;
+
+/**
+ * @author phoenixhell
+ * @since 2021/10/4 0004-上午 9:41
+ */
+
+public interface SecurityService {
+    User findUserByName(String name);
+}
