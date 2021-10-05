@@ -2,6 +2,7 @@ package com.phoenixhell.spring.realm;
 
 import com.phoenixhell.spring.entity.User;
 import com.phoenixhell.spring.excption.MyException;
+import com.phoenixhell.spring.service.SecurityService;
 import com.phoenixhell.spring.service.impl.SecurityServiceImpl;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -11,6 +12,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -19,12 +21,11 @@ import org.springframework.stereotype.Component;
  * @since 2021/10/4 0004-上午 9:16
  */
 
-// realm 保存用户名密码
+// realm 和数据库用户名密码比对
 @Component
 public class LoginRealm extends AuthorizingRealm {
-    //无法注入的自己new个 先解决
-//    @Autowired
-//    private SecurityService securityService;
+    @Autowired
+    private SecurityService securityService;
 
     //鉴权
     @Override
@@ -38,11 +39,9 @@ public class LoginRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         //获取登陆名
         String loginName = (String) token.getPrincipal();
-//        String password = new String((char[]) token.getCredentials());
-        SecurityServiceImpl securityService = new SecurityServiceImpl();
         User user = securityService.findUserByName(loginName);
 
-
+        System.out.println(user);
         if (user==null) {
              throw new MyException(2000,"用户不存在或者账号密码错误");
             // 在该方法中只允许抛出继承自AuthenticationException的异常

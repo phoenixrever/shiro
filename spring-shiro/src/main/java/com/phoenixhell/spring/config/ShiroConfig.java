@@ -30,6 +30,7 @@ public class ShiroConfig {
         credentialsMatcher.setHashAlgorithmName("md5");
         //指定散列次数
         credentialsMatcher.setHashIterations(2);
+
         loginRealm.setCredentialsMatcher(credentialsMatcher);
         //将realm注入SecurityManager
         securityManager.setRealm(loginRealm);
@@ -40,6 +41,8 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition=new DefaultShiroFilterChainDefinition();
+        // 登入功能
+        chainDefinition.addPathDefinition("/login","anon");
         // 登出功能
         chainDefinition.addPathDefinition("/logout","logout");
         // 错误页面无需认证

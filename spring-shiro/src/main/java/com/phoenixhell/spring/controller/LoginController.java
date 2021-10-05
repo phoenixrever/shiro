@@ -1,6 +1,12 @@
 package com.phoenixhell.spring.controller;
 
+import com.phoenixhell.spring.excption.MyException;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     @GetMapping("/login")
-    public String login(){
-        return "login";
+    public String login(Model model){
+        Subject currentUser = SecurityUtils.getSubject();
+        if (!currentUser.isAuthenticated()) {
+            UsernamePasswordToken token = new UsernamePasswordToken("admin", "123456");
+            try {
+                currentUser.login(token);
+            } catch (AuthenticationException e) {
+                e.printStackTrace();
+                throw new MyException(20000,e.getMessage());
+            }
+        }
+        model.addAttribute("user",currentUser.getPrincipal());
+        return "index";
     }
 }

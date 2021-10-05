@@ -9,5 +9,5 @@ import com.phoenixhell.spring.entity.User;
  */
 
 public interface SecurityService {
-    User findUserByName(String name);
+    User findUserByName(String username);
 }

@@ -19,11 +19,8 @@ public class SecurityServiceImpl implements SecurityService {
     private UserService userService;
 
     @Override
-    public User findUserByName(String name) {
-//        User user = userService.query().eq("name", name).one();
-        User user = new User();
-        user.setName("admin");
-        user.setPassword("00b3187384f2708025074f28764a4a30");
+    public User findUserByName(String username) {
+        User user = userService.query().eq("username", username).one();
         return user;
     }
 }

@@ -1,14 +1,15 @@
 server:
   port: 8012
 
+#认证失败跳转
 shiro:
   loginUrl: /login.html
 
 spring:
   datasource:
     username: root
-    password: 159629zxc
-    url: jdbc:mysql://localhost:3306/shiro?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    password: root
+    url: jdbc:mysql://192.168.56.100:3306/shiro?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 #mybatis
