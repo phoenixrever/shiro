@@ -1,9 +1,11 @@
 server:
   port: 8012
 
+salt: salt
 #认证失败跳转
 shiro:
   loginUrl: /login.html
+
 
 spring:
   datasource:

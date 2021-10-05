@@ -16,20 +16,33 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 public class LoginController {
+    @GetMapping({"/login.html", "/"})
+    public String index() {
+        return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        Subject currentUser = SecurityUtils.getSubject();
+        if (currentUser.isAuthenticated()) {
+           currentUser.logout();
+        }
+        return "login";
+    }
 
     @GetMapping("/login")
-    public String login(Model model){
+    public String login(String username, String password, Model model) {
         Subject currentUser = SecurityUtils.getSubject();
         if (!currentUser.isAuthenticated()) {
-            UsernamePasswordToken token = new UsernamePasswordToken("admin", "123456");
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
             try {
                 currentUser.login(token);
             } catch (AuthenticationException e) {
                 e.printStackTrace();
-                throw new MyException(20000,e.getMessage());
+                throw new MyException(20000, e.getMessage());
             }
         }
-        model.addAttribute("user",currentUser.getPrincipal());
+        model.addAttribute("user", currentUser.getPrincipal());
         return "index";
     }
 }

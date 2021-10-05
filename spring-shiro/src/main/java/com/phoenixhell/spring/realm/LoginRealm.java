@@ -13,6 +13,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -26,6 +27,9 @@ import org.springframework.stereotype.Component;
 public class LoginRealm extends AuthorizingRealm {
     @Autowired
     private SecurityService securityService;
+
+    @Value(value = "${salt}")
+    private String salt;
 
     //鉴权
     @Override
@@ -49,7 +53,7 @@ public class LoginRealm extends AuthorizingRealm {
         }
         //第二个参数从数据库中获取的password，加密后再与token中的password进行对比，匹配上了就通过，匹配不上就报异常。
         //第三个参数 salt
-        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(loginName, user.getPassword(), ByteSource.Util.bytes("salt"),getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(loginName, user.getPassword(), ByteSource.Util.bytes(salt),getName());
         return simpleAuthenticationInfo;
     }
 }
