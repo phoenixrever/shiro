@@ -1,14 +1,12 @@
 package com.phoenixhell.spring.controller;
 
-import com.phoenixhell.spring.excption.MyException;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author phoenixhell
@@ -16,33 +14,49 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 public class LoginController {
-    @GetMapping({"/login.html", "/"})
-    public String index() {
-        return "login";
-    }
-
-    @GetMapping("/logout")
-    public String logout() {
+    @GetMapping({"/","/index"})
+    public String index(Model model) {
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser.isAuthenticated()) {
-           currentUser.logout();
+            model.addAttribute("user", currentUser);
+        }else{
+            model.addAttribute("user", "未登录");
+        }
+        return "index";
+    }
+
+    @GetMapping({"/login.html"})
+    public String loginPage() {
+        Subject currentUser = SecurityUtils.getSubject();
+        if (currentUser.isAuthenticated()) {
+            return "redirect:index";
         }
         return "login";
     }
 
+
     @GetMapping("/login")
-    public String login(String username, String password, Model model) {
+    public String login(String username, String password,@RequestParam(defaultValue = "false") Boolean rememberMe,RedirectAttributes redirectAttributes) {
         Subject currentUser = SecurityUtils.getSubject();
         if (!currentUser.isAuthenticated()) {
             UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+            token.setRememberMe(rememberMe);
             try {
                 currentUser.login(token);
-            } catch (AuthenticationException e) {
-                e.printStackTrace();
-                throw new MyException(20000, e.getMessage());
+            } catch (UnknownAccountException uae) {
+                redirectAttributes.addFlashAttribute("error","没有此用户");
+                return "redirect:login.html";
+            } catch (IncorrectCredentialsException ice) {
+                redirectAttributes.addFlashAttribute("error","密码错误");
+                return "redirect:login.html";
+            } catch (LockedAccountException lae) {
+                redirectAttributes.addFlashAttribute("error","账户锁定");
+                return "redirect:login.html";
+            } catch (AuthenticationException ae) {
+                redirectAttributes.addFlashAttribute("error","未知异常");
+                return "redirect:login.html";
             }
         }
-        model.addAttribute("user", currentUser.getPrincipal());
-        return "index";
+        return "redirect:index";
     }
 }

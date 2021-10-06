@@ -1,7 +1,11 @@
 package com.phoenixhell.spring.service;
 
 
+import com.phoenixhell.spring.entity.Permission;
+import com.phoenixhell.spring.entity.Role;
 import com.phoenixhell.spring.entity.User;
+
+import java.util.List;
 
 /**
  * @author phoenixhell
@@ -10,4 +14,6 @@ import com.phoenixhell.spring.entity.User;
 
 public interface SecurityService {
     User findUserByName(String username);
+    List<Permission> findPermissionsByUsername(String username);
+    List<Role> findRoleByUsername(String username);
 }

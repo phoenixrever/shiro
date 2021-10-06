@@ -1,20 +1,21 @@
 package com.phoenixhell.spring.realm;
 
-import com.phoenixhell.spring.entity.User;
-import com.phoenixhell.spring.excption.MyException;
+import com.phoenixhell.spring.entity.Permission;
+import com.phoenixhell.spring.entity.Role;
 import com.phoenixhell.spring.service.SecurityService;
-import com.phoenixhell.spring.service.impl.SecurityServiceImpl;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import com.phoenixhell.spring.entity.User;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -31,11 +32,23 @@ public class LoginRealm extends AuthorizingRealm {
     @Value(value = "${salt}")
     private String salt;
 
-    //鉴权
+    //授权给用户
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        String username = (String) principals.getPrimaryPrincipal();
+        System.out.println("授权给用户:"+username);
 
-        return null;
+        List<Role> roles = securityService.findRoleByUsername(username);
+        List<String> roleList = roles.stream().map(role -> role.getRoleName()).collect(Collectors.toList());
+
+        List<Permission> permissions = securityService.findPermissionsByUsername(username);
+        System.out.println(permissions);
+        List<String> permissionList = permissions.stream().map(permission -> permission.getPermission()).collect(Collectors.toList());
+
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.addStringPermissions(roleList);
+        simpleAuthorizationInfo.addStringPermissions(permissionList);
+        return simpleAuthorizationInfo;
     }
 
     //自定义认证方法
@@ -44,16 +57,14 @@ public class LoginRealm extends AuthorizingRealm {
         //获取登陆名
         String loginName = (String) token.getPrincipal();
         User user = securityService.findUserByName(loginName);
-
         System.out.println(user);
-        if (user==null) {
-             throw new MyException(2000,"用户不存在或者账号密码错误");
+        if (user == null) {
             // 在该方法中只允许抛出继承自AuthenticationException的异常
-            //throw new UnknownAccountException("用户不存在");
+            throw new UnknownAccountException("用户不存在");
         }
         //第二个参数从数据库中获取的password，加密后再与token中的password进行对比，匹配上了就通过，匹配不上就报异常。
         //第三个参数 salt
-        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(loginName, user.getPassword(), ByteSource.Util.bytes(salt),getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(loginName, user.getPassword(), ByteSource.Util.bytes(salt), getName());
         return simpleAuthenticationInfo;
     }
 }

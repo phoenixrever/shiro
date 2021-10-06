@@ -1,18 +1,20 @@
 package com.phoenixhell.spring.service.impl;
 
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.phoenixhell.spring.entity.User;
 import com.phoenixhell.spring.mapper.UserMapper;
 import com.phoenixhell.spring.service.UserService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-
 /**
+ * <p>
+ *  服务实现类
+ * </p>
+ *
  * @author phoenixhell
- * @since 2021/10/4 0004-上午 9:36
+ * @since 2021-10-06
  */
-@Service("UserService")
+@Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 }

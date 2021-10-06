@@ -5,6 +5,13 @@
     <title>Index</title>
 </head>
 <body>
-    <h1>username : [[${user}]]</h1>
+    <h2>username : [[${user.getPrincipal()}]] </h2>
+    <a href="/user/add" th:if="${user.isPermitted('user:add')}">新增</a>
+    <a href="/user/delete" th:if="${user.isPermitted('user:delete')}">删除</a>
+    <a href="/user/update" th:if="${user.isPermitted('user:update')}">修改</a>
+    <a href="/user/search" th:if="${user.isPermitted('user:search')}">查询</a>
+    <br>
+    <br>
+    <a href="/logout">退出</a>
 </body>
 </html>
