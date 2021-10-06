@@ -1,4 +1,4 @@
-package com.phoenixhell.spring.realm;
+package com.phoenixhell.spring.shiro;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

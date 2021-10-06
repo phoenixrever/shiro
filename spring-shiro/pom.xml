@@ -66,6 +66,18 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.14</version>
         </dependency>
+        <!--缓存-->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
         <!-- velocity 模板引擎, Mybatis Plus 代码生成器需要 -->
         <dependency>

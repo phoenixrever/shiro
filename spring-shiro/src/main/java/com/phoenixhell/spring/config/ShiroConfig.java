@@ -1,10 +1,11 @@
 package com.phoenixhell.spring.config;
 
-import com.phoenixhell.spring.realm.LoginRealm;
-import com.phoenixhell.spring.realm.MyRealm;
+import com.phoenixhell.spring.shiro.LoginRealm;
+import com.phoenixhell.spring.shiro.MyRealm;
+import com.phoenixhell.spring.shiro.RedisCacheManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
@@ -22,8 +23,8 @@ import org.springframework.context.annotation.Configuration;
 public class ShiroConfig {
     @Autowired
     private LoginRealm loginRealm;
-    @Autowired
-    private MyRealm myRealm;
+    //@Autowired
+    //private RedisCacheManager redisCacheManager;
 
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager(){
@@ -48,11 +49,23 @@ public class ShiroConfig {
         //realms.add(loginRealm);
         //realms.add(myRealm);
         //securityManager.setRealms(realms);
-        //=======================设置多认证策略  完成===========================
+
+        //=======================开启缓存管理===========================
+        //loginRealm.setCacheManager(new EhCacheManager());
+        loginRealm.setCacheManager(new RedisCacheManager());
+        //开启全局缓存
+        loginRealm.setCachingEnabled(true);
+        //开启认证和授权缓存
+        loginRealm.setAuthenticationCachingEnabled(true);
+        loginRealm.setAuthenticationCacheName("authenticationCache");
+        loginRealm.setAuthorizationCachingEnabled(true);
+        loginRealm.setAuthorizationCacheName("authorizationCache");
 
         securityManager.setRealm(loginRealm);
+
         //设置rememberMe manager
         securityManager.setRememberMeManager(cookieRememberMeManager());
+
 
         return securityManager;
     }
@@ -100,8 +113,4 @@ public class ShiroConfig {
         return cookieRememberMeManager;
     }
 
-    @Bean
-    protected CacheManager cacheManager() {
-        return new MemoryConstrainedCacheManager();
-    }
 }

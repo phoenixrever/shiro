@@ -1,4 +1,4 @@
-package com.phoenixhell.spring.realm;
+package com.phoenixhell.spring.shiro;
 
 import com.phoenixhell.spring.entity.Permission;
 import com.phoenixhell.spring.entity.Role;
