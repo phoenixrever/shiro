@@ -11,10 +11,10 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 /**
- * 如果不加 @Component 拿不到redistemplate
  * 继承泛型
  * 全部保留
  * class C1<T2,T1,A> extends Father<T1,T2>
@@ -33,14 +33,13 @@ public class RedisCache<K, V> implements Cache<K, V> {
         this.cacheName = cacheName;
     }
 
-    private RedisTemplate getRedisTemplate() {
-        ApplicationContext context = ApplicationContextUtils.getApplicationContext();
+    private RedisTemplate<String, V> getRedisTemplate() {
         return ApplicationContextUtils.getBean("redisTemplate");
     }
 
     @Override
     public V get(K k) throws CacheException {
-        RedisTemplate redisTemplate = getRedisTemplate();
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
         System.out.println("get key:" + k);
         if (k == null) {
             return null;
@@ -53,8 +52,8 @@ public class RedisCache<K, V> implements Cache<K, V> {
     @Override
     public V put(K k, V v) throws CacheException {
         System.out.println("puy key:" + k);
-        System.out.println("puy value:" +v);
-        RedisTemplate redisTemplate = getRedisTemplate();
+        System.out.println("puy value:" + v);
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
         if (k == null) {
             log.warn("Saving a null key is meaningless, return value directly without call Redis.");
             return v;
@@ -71,26 +70,38 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public V remove(K k) throws CacheException {
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
+        BoundHashOperations<String, K, V> operations = redisTemplate.boundHashOps(cacheName);
+        operations.delete(k);
+        System.out.println("remove");
         return null;
     }
 
     @Override
     public void clear() throws CacheException {
-
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
+        redisTemplate.delete(cacheName);
     }
 
     @Override
     public int size() {
-        return 0;
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
+        BoundHashOperations<String, K, V> operations = redisTemplate.boundHashOps(cacheName);
+        int size = Objects.requireNonNull(operations.size()).intValue();
+        return size;
     }
 
     @Override
     public Set<K> keys() {
-        return null;
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
+        BoundHashOperations<String, K, V> operations = redisTemplate.boundHashOps(cacheName);
+        return operations.keys();
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        RedisTemplate<String, V> redisTemplate = getRedisTemplate();
+        BoundHashOperations<String, K, V> operations = redisTemplate.boundHashOps(cacheName);
+        return operations.values();
     }
 }

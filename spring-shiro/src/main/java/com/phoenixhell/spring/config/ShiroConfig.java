@@ -78,6 +78,7 @@ public class ShiroConfig {
         DefaultShiroFilterChainDefinition chainDefinition=new DefaultShiroFilterChainDefinition();
         // 登入功能
         chainDefinition.addPathDefinition("/login","anon");
+        chainDefinition.addPathDefinition("/code","anon");
         // 登出功能
         chainDefinition.addPathDefinition("/logout","logout");
         // 错误页面无需认证

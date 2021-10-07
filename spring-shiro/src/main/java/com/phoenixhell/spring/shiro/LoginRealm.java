@@ -4,6 +4,7 @@ import com.phoenixhell.spring.entity.Permission;
 import com.phoenixhell.spring.entity.Role;
 import com.phoenixhell.spring.service.SecurityService;
 import com.phoenixhell.spring.entity.User;
+import com.phoenixhell.spring.util.AuthCodeUtil;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +66,7 @@ public class LoginRealm extends AuthorizingRealm {
             // 在该方法中只允许抛出继承自AuthenticationException的异常
             throw new UnknownAccountException("用户不存在");
         }
+
         //第二个参数从数据库中获取的password，加密后再与token中的password进行对比，匹配上了就通过，匹配不上就报异常。
         //第三个参数 salt
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(loginName, user.getPassword(), MyByteSource.Util.bytes(salt), getName());

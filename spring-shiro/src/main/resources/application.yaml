@@ -8,8 +8,8 @@ shiro:
 
 
 spring:
-  profiles:
-    active: prod
+#  profiles:
+#    active: prod
   datasource:
     username: root
     password: root
