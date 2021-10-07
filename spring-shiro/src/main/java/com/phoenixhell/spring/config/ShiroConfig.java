@@ -2,8 +2,10 @@ package com.phoenixhell.spring.config;
 
 import com.phoenixhell.spring.shiro.LoginRealm;
 import com.phoenixhell.spring.shiro.MyRealm;
+import com.phoenixhell.spring.shiro.RedisCache;
 import com.phoenixhell.spring.shiro.RedisCacheManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -23,8 +25,6 @@ import org.springframework.context.annotation.Configuration;
 public class ShiroConfig {
     @Autowired
     private LoginRealm loginRealm;
-    //@Autowired
-    //private RedisCacheManager redisCacheManager;
 
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager(){
@@ -52,7 +52,9 @@ public class ShiroConfig {
 
         //=======================开启缓存管理===========================
         //loginRealm.setCacheManager(new EhCacheManager());
+
         loginRealm.setCacheManager(new RedisCacheManager());
+//        loginRealm.setCacheManager(new EhCacheManager());
         //开启全局缓存
         loginRealm.setCachingEnabled(true);
         //开启认证和授权缓存
@@ -97,6 +99,7 @@ public class ShiroConfig {
         //cookie.setDomain("gulimall.com");
         // "/"路径下的所有路径cookie都起效
         cookie.setPath("/");
+        //xss 读取cookie 防护 只能http javascirpt 无法访问
         cookie.setHttpOnly(true);
         //cookie 失效时间30天
         cookie.setMaxAge(60*60*24*30 );

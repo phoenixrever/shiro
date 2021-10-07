@@ -17,6 +17,7 @@ public class LoginController {
     @GetMapping({"/","/index"})
     public String index(Model model) {
         Subject currentUser = SecurityUtils.getSubject();
+        System.out.println("isPermitted:"+currentUser.isPermitted("user:add"));
         if (currentUser.isAuthenticated()) {
             model.addAttribute("user", currentUser);
         }else{
