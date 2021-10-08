@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+salt: salt
+#认证失败跳转
+shiro:
+  loginUrl: /login.html
+  UnauthorizedUrl: /404.html
+
+spring:
+#  profiles:
+#    active: prod
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.56.100:3306/shiro?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 192.168.56.100
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.mapper
+
+#打印sql 语句
+logging:
+  level:
+    com.phoenixhell.shiroToken: debug
+

@@ -21,6 +21,7 @@
     <modules>
         <module>lession1</module>
         <module>spring-shiro</module>
+        <module>shiro-token</module>
     </modules>
 
 

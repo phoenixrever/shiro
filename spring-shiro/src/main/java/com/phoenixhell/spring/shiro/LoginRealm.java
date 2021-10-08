@@ -61,7 +61,7 @@ public class LoginRealm extends AuthorizingRealm {
         //获取登陆名
         String loginName = (String) token.getPrincipal();
         User user = securityService.findUserByName(loginName);
-        System.out.println(user);
+        System.out.println("AuthenticationInfo:"+user);
         if (user == null) {
             // 在该方法中只允许抛出继承自AuthenticationException的异常
             throw new UnknownAccountException("用户不存在");
